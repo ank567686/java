@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Temperature Converter</title>
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+    <style>
+        /* Common Styles */
+        body {
+            font-family: 'Poppins', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            color: white;
+            background: linear-gradient(45deg, #3498db, #ff5733, #ffeb3b);
+            background-size: 300% 300%;
+            animation: gradientAnimation 8s ease infinite;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Animated Gradient */
+        @keyframes gradientAnimation {
+            0% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        .container {
+            background: rgba(0, 0, 0, 0.7);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            animation: fadeIn 1s ease-in-out;
+            backdrop-filter: blur(10px);
+            transition: transform 0.3s ease-in-out, background 0.3s ease;
+            position: relative;
+            z-index: 1;
+        }
+
+        .container:hover {
+            transform: scale(1.05);
+        }
+
+        h2 {
+            color: #ffdd57;
+            font-size: 26px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        input, select, button {
+            margin: 10px;
+            padding: 12px;
+            font-size: 18px;
+            border-radius: 8px;
+            border: none;
+            outline: none;
+        }
+
+        input, select {
+            background: rgba(255, 255, 255, 0.8);
+            color: #333;
+        }
+
+        button {
+            background-color: #ff5733;
+            color: white;
+            cursor: pointer;
+            transition: background 0.3s, transform 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        button:hover {
+            background-color: #c70039;
+            transform: scale(1.05);
+        }
+
+        #result {
+            font-size: 22px;
+            margin-top: 15px;
+            color: #ffdd57;
+            font-weight: bold;
+        }
+
+        .icon {
+            font-size: 50px;
+            margin-bottom: 10px;
+            color: #ffdd57;
+        }
+
+        /* Animation */
+        @keyframes fadeIn {
+            0% {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Dark Theme */
+        body.dark {
+            background-color: #333;
+        }
+
+        body.dark .container {
+            background: rgba(0, 0, 0, 0.8);
+        }
+
+        body.dark h2 {
+            color: #ffdd57;
+        }
+
+        body.dark button {
+            background-color: #ff5733;
+        }
+
+        body.dark input,
+        body.dark select {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+
+        /* Light Theme */
+        body.light {
+            background-color: #f4f4f4;
+        }
+
+        body.light .container {
+            background: rgba(255, 255, 255, 0.7);
+        }
+
+        body.light button {
+            background-color: #3498db;
+        }
+
+        body.light input,
+        body.light select {
+            background: rgba(0, 0, 0, 0.1);
+            color: #333;
+        }
+
+        /* Theme Toggle */
+        .theme-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background-color: #3498db;
+            padding: 10px;
+            border-radius: 50%;
+            color: white;
+            cursor: pointer;
+            font-size: 20px;
+            transition: background-color 0.3s ease;
+        }
+
+        .theme-toggle:hover {
+            background-color: #2980b9;
+        }
+    </style>
+</head>
+<body class="light">
+    <div class="container">
+        <h2><i class="fas fa-thermometer-half"></i> Temperature Converter</h2>
+        <div class="icon"><i class="fas fa-cloud-sun"></i></div>
+        <input type="number" id="temperature" placeholder="Enter temperature">
+        <select id="unit">
+            <option value="celsius">&#8451; to &#8457;</option>
+            <option value="fahrenheit">&#8457; to &#8451;</option>
+        </select>
+        <button onclick="convertTemperature()"><i class="fas fa-exchange-alt"></i> Convert</button>
+        <h3 id="result"></h3>
+    </div>
+
+    <!-- Theme Toggle Button -->
+    <div class="theme-toggle" onclick="toggleTheme()">🌙</div>
+
+    <script>
+        // Theme Toggle Functionality
+        function toggleTheme() {
+            const body = document.body;
+            const currentTheme = body.classList.contains('light') ? 'light' : 'dark';
+            body.classList.remove(currentTheme);
+
+            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+            body.classList.add(newTheme);
+
+            const themeButton = document.querySelector('.theme-toggle');
+            themeButton.innerText = newTheme === 'light' ? '🌙' : '🌞';
+        }
+
+        // Temperature Conversion Functionality
+        function convertTemperature() {
+            let temp = parseFloat(document.getElementById('temperature').value);
+            let unit = document.getElementById('unit').value;
+            let result = document.getElementById('result');
+
+            if (isNaN(temp)) {
+                result.innerText = "Please enter a valid number";
+                return;
+            }
+
+            if (unit === "celsius") {
+                let fahrenheit = (temp * 9/5) + 32;
+                result.innerText = `${temp}°C = ${fahrenheit.toFixed(2)}°F`;
+            } else {
+                let celsius = (temp - 32) * 5/9;
+                result.innerText = `${temp}°F = ${celsius.toFixed(2)}°C`;
+            }
+        }
+    </script>
+</body>
+</html>
